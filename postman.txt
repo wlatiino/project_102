@@ -1,0 +1,25 @@
+
+PostMan
+http://localhost:708/login
+{
+    "username":"wilson",
+    "password":"abc123",
+    "database":"dbABC",
+    "version_id":"v001",
+    "version":"1.0.1",
+    "date":"YYYYMMDD",
+    "device_id":"dev001"
+}
+
+
+http://localhost:708/refreshtoken
+{
+	"refresh_token":""
+}
+
+
+http://localhost:708/dataso
+{
+    "controller": "TBLSYS",
+    "method": "Save"
+}
