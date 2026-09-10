@@ -31,6 +31,8 @@ func CrtObj(c any) map[string]interface{} {
 		return CrtObjCnt(v)
 	case ObjBtn:
 		return CrtObjBtn(v)
+	case ObjTab:
+		return CrtObjTab(v)
 	default:
 		return nil
 	}

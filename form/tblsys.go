@@ -33,7 +33,7 @@ type tblsys struct {
 }
 
 func (saya tblsys) Save(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLSYS-Save()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLSYS-Save()")
 	hasil.Sukses = false
 	hasil.Pesan = "No Action for this Method!"
 	hasil.Data = ""
@@ -116,7 +116,7 @@ func (saya tblsys) StpSave(tx Transaction,
 }
 
 func (saya tblsys) LoadData(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLSYS-LoadGrid()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLSYS-LoadGrid()")
 
 	sqlstm :=
 		SO_Class.Fmt.Sprint(`
@@ -129,7 +129,7 @@ func (saya tblsys) LoadData(c *gin.Context) (hasil SO_Class.Hasil) {
 			from tblsys 
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(true, sqlstm)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.GetRecordSet(c, sqlstm)
 	// hasil = Form.GetRs(c, sqlstm)
 	// hasil = Form.GetRecordSet(c, sqlstm)
@@ -137,7 +137,7 @@ func (saya tblsys) LoadData(c *gin.Context) (hasil SO_Class.Hasil) {
 }
 
 func (saya tblsys) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLSYS-LoadGrid()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLSYS-LoadGrid()")
 	if c.Param("sort") == "" {
 		param := gin.Param{
 			Key: "sort",
@@ -165,7 +165,7 @@ func (saya tblsys) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 			) YN on sycd = tsdpfg
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,
@@ -187,15 +187,69 @@ func (saya tblsys) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 	// hasil = Form.GetRecordSet(c, sqlstm)
 	return hasil
 }
+
+func (saya tblsys) LoadGridPopUp(c *gin.Context) (hasil SO_Class.Hasil) {
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLSYS-LoadGridPopUp()")
+	if c.Param("sort") == "" {
+		param := gin.Param{
+			Key: "sort",
+			Value: SO_Class.Fmt.Sprint(
+				`[{"property": "tsdscd","direction": "asc"}`,
+				`,{"property": "tssycd","direction": "asc"}]`,
+			),
+		}
+		c.Params = append(c.Params, param)
+	}
+	sqlstm :=
+		SO_Class.Fmt.Sprint(`
+			select 
+				tsdscd,
+				tssycd, tssynm, 
+				tssyv1::dec(24,0) tssyv1, 
+				tssyv2::dec(24,2) tssyv2,
+				tssyv3::dec(24,4) tssyv3, 
+				synm tsdpfg_desc,
+				tsremk, tsusrm
+				`, Form.GetDefaultField("ts"), ` 
+			from tblsys 			
+			left join (
+				select tssycd sycd, tssynm synm from tblsys 
+				where tsdscd = 'YESNO'
+			) YN on sycd = tsdpfg
+			where tsdpfg = '1'
+		`)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
+	hasil = Form.LoadGrid(ParamLoadGrid{
+		c:      c,
+		sqlstm: sqlstm,
+		key:    "tssycd",
+		columns: []Kolum{
+			{"tsdscd", KolumProperty{name: "Table Code"}},
+			{"tssycd", KolumProperty{name: "Code"}},
+			{"tssynm", KolumProperty{name: "Description"}},
+			{"tssyv1", KolumProperty{name: "Value 1"}},
+			{"tssyv2", KolumProperty{name: "Value 2"}},
+			{"tssyv3", KolumProperty{name: "Value 3"}},
+			{"tsdpfg_desc", KolumProperty{name: "Display Flag"}},
+			{"tsremk", KolumProperty{name: "Remark"}},
+			{"tsusrm", KolumProperty{name: "User Remark"}},
+		},
+		defaultField: true,
+	})
+	// hasil = Form.GetRs(c, sqlstm)
+	// hasil = Form.GetRecordSet(c, sqlstm)
+	return hasil
+}
+
 func (saya tblsys) FillForm(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLSYS-FillForm()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLSYS-FillForm()")
 	key := c.Param("tsnomriy")
 	sqlstm := SO_Class.Fmt.Sprint(`
 		select * from tblsys 
 		left join tbldsc on tddscd = tsdscd
-		where tsnomriy = '`, key, `'`,
-	)
-	SO_Class.Log.Println(true, sqlstm)
+		where tsnomriy = '`, key, `'
+	`)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.GetRs(c, sqlstm)
 	return hasil
 }
@@ -300,7 +354,7 @@ func (saya tblsys) LoadFormObject(c *gin.Context) (hasil SO_Class.Hasil) {
 					Id: "tsremk", Name: "Remark",
 				}),
 				Form.CrtObj(ObjRmk{Mode: "1", FrmId: frmId, MenuId: menuId,
-					Id: "tsusrm", Name: "User Remark",
+					Id: "tsusrm", Name: "Internal Use Remark",
 				}),
 			},
 		}),

@@ -75,17 +75,17 @@ func (f *FormType) VerifyPassword(password, hash string) bool {
 func (f *FormType) GetRs(c *gin.Context, sqlstm string) (hasil SO_Class.Hasil) {
 
 	// t, _ := Form.tk.ExtractTokenMetadata(c)
-	// SO_Class.Log.Println(false, t)
+	// SO_Class.Log.CetakKunci(false, c, t)
 	// rs, jmlhRec, err := SO_Module.Database.GetRs(t.Database, sqlstm)
 	db, _ := c.Get("globalDB")
-	SO_Class.Log.Println(false, db)
+	SO_Class.Log.CetakKunci(false, c, db)
 	rs, jmlhRec, err := SO_Module.Database.GetRs(db.(string), sqlstm)
 	if err != nil {
 		hasil.Sukses = false
 		hasil.Pesan = err.Error()
 		hasil.Data = nil
 		hasil.Kode = ""
-		SO_Class.Log.Println(true, "Form GetRs Error", sqlstm, err.Error())
+		SO_Class.Log.CetakKunci(true, c, "Form GetRs Error", sqlstm, err.Error())
 	} else {
 		hasil.Sukses = true
 		if jmlhRec == 0 {
@@ -103,10 +103,10 @@ func (f *FormType) GetRs(c *gin.Context, sqlstm string) (hasil SO_Class.Hasil) {
 func (f *FormType) GetRecordSet(c *gin.Context, sqlstm string) (hasil SO_Class.Hasil) {
 
 	// t, _ := Form.tk.ExtractTokenMetadata(c)
-	// SO_Class.Log.Println(false, t)
+	// SO_Class.Log.CetakKunci(false, c, t)
 	// rs, err := SO_Module.Database.GetRecordSet(t.Database, sqlstm)
 	db, _ := c.Get("globalDB")
-	SO_Class.Log.Println(false, db)
+	SO_Class.Log.CetakKunci(false, c, db)
 	rs, err := SO_Module.Database.GetRecordSet(db.(string), sqlstm)
 	if err != nil {
 		hasil.Sukses = false
@@ -631,6 +631,7 @@ type ObjChg = SO_Object.ObjChg
 type ObjPop = SO_Object.ObjPop
 type ObjCnt = SO_Object.ObjCnt
 type ObjBtn = SO_Object.ObjBtn
+type ObjTab = SO_Object.ObjTab
 
 func (f *FormType) CrtObj(c any) map[string]interface{} {
 	return SO_Object.CrtObj(c)
@@ -678,6 +679,15 @@ func (f *FormType) CheckRecord_BFCS(bfcs ParamBFCS) (bool, error) {
 
 func (f *FormType) GetTBLNOR(tx Transaction, userName string, table string) string {
 	return SO_Module.Database.GetTBLNOR(tx, userName, table)
+}
+
+func (f *FormType) GenerateAutoNo(
+	tx Transaction,
+	userName string, code string, nbty string,
+	year string, month string, tipe string,
+	length int,
+) (string, error) {
+	return SO_Module.Database.GenerateAutoNo(tx, userName, code, nbty, year, month, tipe, length)
 }
 
 func (f *FormType) GetCurrentTime() time.Time {

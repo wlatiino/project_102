@@ -34,7 +34,7 @@ type tblusr struct {
 }
 
 func (saya tblusr) Save(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUSR-Save()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLUSR-Save()")
 	hasil.Sukses = false
 	hasil.Pesan = "No Action for this Method!"
 	hasil.Data = ""
@@ -130,7 +130,7 @@ func (saya tblusr) StpSave(tx Transaction,
 }
 
 func (saya tblusr) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUSR-LoadGrid()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUSR-LoadGrid()")
 	if c.Param("sort") == "" {
 		param := gin.Param{Key: "sort", Value: `[{"property": "tuuser","direction": "asc"}]`}
 		c.Params = append(c.Params, param)
@@ -149,7 +149,7 @@ func (saya tblusr) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 			from tblusr
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,
@@ -177,10 +177,10 @@ func (saya tblusr) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 }
 
 func (saya tblusr) FillForm(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUSR-FillForm()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUSR-FillForm()")
 	key := c.Param("tuuseriy")
 	sqlstm := SO_Class.Fmt.Sprint("select * from tblusr where tuuseriy = '", key, "'")
-	SO_Class.Log.Println(true, sqlstm)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.GetRs(c, sqlstm)
 	return hasil
 }
@@ -341,7 +341,7 @@ func (saya tblusr) LoadFormObject(c *gin.Context) (hasil SO_Class.Hasil) {
 }
 
 func (saya tblusr) LoadGridUserLevel(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUSR-LoadGridUserLevel()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUSR-LoadGridUserLevel()")
 	if c.Param("sort") == "" {
 		param := gin.Param{Key: "sort", Value: `[{"property": "tuuser","direction": "asc"}]`}
 		c.Params = append(c.Params, param)
@@ -362,7 +362,7 @@ func (saya tblusr) LoadGridUserLevel(c *gin.Context) (hasil SO_Class.Hasil) {
 				select tuuslv from tblusr where tuuser = '`, c.Param(("username")), `'
 			)
 		`)
-	SO_Class.Log.Println(true, sqlstm)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,

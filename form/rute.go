@@ -12,6 +12,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/twinj/uuid"
 )
 
 type rRute struct{}
@@ -148,15 +149,23 @@ func (r rRute) Panggil(c *gin.Context) {
 	}
 	c.Params = dataParams
 
+	logUUID := uuid.NewV4().String()
+	kunciRute := SO_Class.Fmt.Sprint(logUUID, " ", controller, "-", method, " - ")
+	c.Set("KunciRute", kunciRute)
+
+	SO_Class.Log.CetakKunci(true, c, "Mulai.....")
 	HasilAkhir := Rute.Cari(controller, method, c)
 
 	if !HasilAkhir.Sukses {
 		// c.JSON(400, HasilAkhir)
+		SO_Class.Log.CetakKunci(true, c, HasilAkhir.Pesan)
+		SO_Class.Log.CetakKunci(true, c, "Selesai.....")
 		c.JSON(http.StatusOK, HasilAkhir)
 		return
 	}
 	// End Cari Rute
 
+	SO_Class.Log.CetakKunci(true, c, "Selesai.....")
 	c.JSON(http.StatusOK, HasilAkhir)
 }
 

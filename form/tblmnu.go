@@ -158,7 +158,7 @@ func (saya tblmnu) StpSave(tx Transaction,
 }
 
 func (saya tblmnu) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLMNU-LoadGrid()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLMNU-LoadGrid()")
 	if c.Param("sort") == "" {
 		param := gin.Param{Key: "sort", Value: `[{"property": "tmnomr","direction": "asc"}]`}
 		c.Params = append(c.Params, param)
@@ -175,7 +175,7 @@ func (saya tblmnu) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 			from tblmnu
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,
@@ -201,10 +201,10 @@ func (saya tblmnu) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 	return hasil
 }
 func (saya tblmnu) FillForm(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLMNU-FillForm()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLMNU-FillForm()")
 	key := c.Param("tmmenuiy")
 	sqlstm := SO_Class.Fmt.Sprint("select * from tblmnu where tmmenuiy = '", key, "'")
-	SO_Class.Log.Println(true, sqlstm)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.GetRs(c, sqlstm)
 	return hasil
 }
@@ -287,10 +287,10 @@ func (saya tblmnu) LoadFormObject(c *gin.Context) (hasil SO_Class.Hasil) {
 								Id: "tmdpfg", Name: "Display Flag", Table: "YESNO", AllowBlank: false, Width: 100,
 							}),
 							Form.CrtObj(ObjRmk{Mode: "0", FrmId: frmId, MenuId: menuId,
-								Id: "tmusrm", Name: "Internal Use Remark",
+								Id: "tmremk", Name: "Remark",
 							}),
 							Form.CrtObj(ObjRmk{Mode: "0", FrmId: frmId, MenuId: menuId,
-								Id: "tmremk", Name: "Remark",
+								Id: "tmusrm", Name: "Internal Use Remark",
 							}),
 							Form.CrtObj(ObjRmk{Mode: "0", FrmId: frmId, MenuId: menuId,
 								Id: "tmjson", Name: "JSON",
@@ -366,11 +366,11 @@ func (saya tblmnu) LoadMenu(c *gin.Context) (hasil SO_Class.Hasil) {
 				And rtrim(tumntp) like concat('%',rtrim(tmmntp),'%')
 			Order By tmnomr
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	tblmnu := Form.GetRs(c, sqlstm)
 
 	if tblmnu.Data == nil {
-		SO_Class.Log.Println(false, "func TBLMNU_LoadMenu --> record menu tidak ada!!! (no rows effected) ")
+		SO_Class.Log.CetakKunci(false, c, "func TBLMNU_LoadMenu --> record menu tidak ada!!! (no rows effected) ")
 		hasil.Pesan = "Tidak ada record Menu"
 		hasil.Data = nil
 		return hasil
@@ -380,18 +380,18 @@ func (saya tblmnu) LoadMenu(c *gin.Context) (hasil SO_Class.Hasil) {
 	//Begin........................................
 	var results []map[string]interface{}
 
-	SO_Class.Log.Println(false, "================================")
-	SO_Class.Log.Println(false, menu)
-	SO_Class.Log.Println(false, "================================")
+	SO_Class.Log.CetakKunci(false, c, "================================")
+	SO_Class.Log.CetakKunci(false, c, menu)
+	SO_Class.Log.CetakKunci(false, c, "================================")
 
 	var iyMenu = make(map[string]int64)
 
 	var Pid int64
 	Pid = 0
 	for key, element := range menu {
-		SO_Class.Log.Println(false, "Key:", key, "=>", "Element:", element)
-		SO_Class.Log.Println(false, element["tmmenuiy"])
-		SO_Class.Log.Println(false, element["tmnomr"].(string))
+		SO_Class.Log.CetakKunci(false, c, "Key:", key, "=>", "Element:", element)
+		SO_Class.Log.CetakKunci(false, c, element["tmmenuiy"])
+		SO_Class.Log.CetakKunci(false, c, element["tmnomr"].(string))
 
 		iyMenu[element["tmnomr"].(string)] = element["tmmenuiy"].(int64)
 
@@ -453,13 +453,13 @@ func (saya tblmnu) LoadMenu(c *gin.Context) (hasil SO_Class.Hasil) {
 			}
 		}
 
-		// SO_Class.Log.Println(false, rows)
+		// SO_Class.Log.CetakKunci(false, c, rows)
 		results = append(results, rows)
 
 	}
 
-	SO_Class.Log.Println(false, results)
-	SO_Class.Log.Println(false, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+	SO_Class.Log.CetakKunci(false, c, results)
+	SO_Class.Log.CetakKunci(false, c, "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
 
 	// hasil.Data = buildMenuTrees(results)
 	hasil.Data = buildMenuTrees(results)
@@ -560,7 +560,7 @@ func (saya tblmnu) ClickMenu(c *gin.Context) (hasil SO_Class.Hasil) {
 					where tuuser = '` + c.Param("username") + `'				
 				);
 		`)
-		SO_Class.Log.Println(false, " tblmnu clikmenu ", sqlstm)
+		SO_Class.Log.CetakKunci(false, c, " tblmnu clikmenu ", sqlstm)
 
 		_, err := Form.Execute(tx, &tr, c.Param("username"), sqlstm)
 		if err != nil {

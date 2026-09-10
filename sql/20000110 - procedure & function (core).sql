@@ -161,6 +161,80 @@ begin
 end
 $$;
 
+
+
+create or replace function stpGenerateAutoNo(
+	_username	varchar,
+	_code		varchar,
+	_nbty		varchar,
+	_year		varchar,
+	_month		varchar,
+	_tipe		varchar,
+	_length		int
+)
+returns varchar
+language plpgsql     
+as $$
+declare 
+	_sqlstm	text;
+	_cnnbnr int := 0;
+	_hasil int := 0;
+	_y text[] := array['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+	_m text[] := array['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+	_mRomawi text[] := array['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+	_cnnomr varchar;
+begin
+	select cnnbnr into _hasil from csynbr 
+	where cncode = _code
+	and cnnbty = _nbty
+	and cnyear = _year 
+	and cnmnth = _month ;
+
+
+	if _hasil is null then
+		_cnnbnr = 1;
+	else
+		_cnnbnr = cast(_hasil as int) + 1;
+	end if;
+
+	_cnnomr = right(concat('000000000000000',_cnnbnr),_length);
+
+	case upper(_tipe)
+		when 'A' then _cnnomr = concat(_code, right(_year,2), _m[cast(_month as int)], _cnnomr);
+		when 'B' then _cnnomr = concat(_code, right(_year,2), right(concat('0000',_month),2), _cnnomr);
+		when 'C' then _cnnomr = concat(_code, right(_year,2), _cnnomr);
+		else _cnnomr = concat(_code, _cnnomr);
+	end case;
+
+	if _hasil is null then
+		_sqlstm = concat('
+				insert into csynbr ( 
+					cncode,cnnbty,cnnbnr,cnnomr,cnyear,cnmnth,cnremk 
+					,cnrgid,cnrgdt,cnchid,cnchdt,cnchno,cndlfg,cndpfg,cndsfg,cnptfg,cnptct,cnptid,cnptdt,cnsrce,cncsdt,cncsid 
+				) 
+				values ( 
+					''',_code,''',''',_nbty,''',''',_cnnbnr,''',''',_cnnomr,''',''',_year,''',''',_month,''','''' 
+				,''',_username,''',''',clock_timestamp(),''',''',_username,''',''',clock_timestamp(),''',0,0,1,0,0,0,'''',''',clock_timestamp(),''',''system'',''',clock_timestamp(),''',''system'' 
+				);
+		');
+		execute _sqlstm;  
+	else 
+		_sqlstm = concat('update csynbr set cnnomr = ''',_cnnomr,''', cnnbnr = ''',_cnnbnr,''' where cncode = ''',_code,''' and cnnbty = ''',_nbty,''' and cnyear = ''',_year,''' and cnmnth = ''',_month,''';');
+		execute _sqlstm; 
+
+	end if;
+	call stpTBLSLF(_username,_sqlstm);
+
+	return _cnnomr;
+--	raise notice '%', _cnnbnr;
+/*
+select * from csynbr;
+select stpGenerateAutoNo('sysadmin', 'INV', 'INV', '2026', '09', 'A', 6);
+*/
+end
+$$;
+
+
 create or replace function FnsHitungMasaKerja(
 	_tipe	varchar,
 	_frdt	varchar,

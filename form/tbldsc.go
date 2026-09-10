@@ -21,7 +21,7 @@ type tbldsc struct {
 }
 
 func (saya tbldsc) Save(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLDSC-Save()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLDSC-Save()")
 	hasil.Sukses = false
 	hasil.Pesan = "No Action for this Method!"
 	hasil.Data = ""
@@ -139,7 +139,7 @@ func (saya tbldsc) StpSave(tx Transaction,
 }
 
 func (saya tbldsc) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLDSC-LoadGrid()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLDSC-LoadGrid()")
 	if c.Param("sort") == "" {
 		param := gin.Param{
 			Key: "sort",
@@ -162,7 +162,7 @@ func (saya tbldsc) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 			left join tblsys d on d.tsdscd = 'YESNO' and d.tssycd = tddpfg
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,
@@ -183,10 +183,10 @@ func (saya tbldsc) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 	return hasil
 }
 func (saya tbldsc) FillForm(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLDSC-FillForm()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLDSC-FillForm()")
 	key := c.Param("tddscd")
 	sqlstm := SO_Class.Fmt.Sprint("select * from tbldsc where tddscd = '", key, "'")
-	SO_Class.Log.Println(true, sqlstm)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.GetRs(c, sqlstm)
 	return hasil
 }
@@ -231,7 +231,7 @@ func (saya tbldsc) LoadFormObject(c *gin.Context) (hasil SO_Class.Hasil) {
 					Id: "tdremk", Name: "Remark",
 				}),
 				Form.CrtObj(ObjRmk{Mode: "1", FrmId: frmId, MenuId: menuId,
-					Id: "tdusrm", Name: "User Remark",
+					Id: "tdusrm", Name: "Internal Use Remark",
 				}),
 			},
 		}),

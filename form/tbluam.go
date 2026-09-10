@@ -10,7 +10,7 @@ import (
 type tbluam struct{}
 
 func (saya tbluam) LoadGridTBLUSR(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUAM-LoadGridTBLUSR()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUAM-LoadGridTBLUSR()")
 	var kondisi string
 	kondisi = ""
 	if c.Param("sqlCondition") == "" {
@@ -36,7 +36,7 @@ func (saya tbluam) LoadGridTBLUSR(c *gin.Context) (hasil SO_Class.Hasil) {
 			left join tblmnu on tmmenuiy = tamenuiy
 			where tadlfg = '0'`, kondisi, `
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,

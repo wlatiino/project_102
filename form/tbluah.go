@@ -20,7 +20,7 @@ type tbluah struct {
 }
 
 func (saya tbluah) Save(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUAH-Save()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLUAH-Save()")
 	hasil.Sukses = false
 	hasil.Pesan = "Masuk TBLUAH - Save"
 	hasil.Data = nil
@@ -34,8 +34,8 @@ func (saya tbluah) Save(c *gin.Context) (hasil SO_Class.Hasil) {
 	// }
 
 	AllGrid := SO_Class.Fungsi.ConvertToJSON(c.Param("GRID"))
-	SO_Class.Log.Println(false, "", AllGrid)
-	SO_Class.Log.Println(false, "", AllGrid.Data.(map[string]interface{})["Grid2"])
+	SO_Class.Log.CetakKunci(false, c, "", AllGrid)
+	SO_Class.Log.CetakKunci(false, c, "", AllGrid.Data.(map[string]interface{})["Grid2"])
 	// return hasil
 
 	exec := Form.ExecQueryMultiple(c, c.Param("username"),
@@ -129,7 +129,7 @@ func (saya tbluah) StpSave(tx Transaction,
 }
 
 func (saya tbluah) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUAH-LoadGrid()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUAH-LoadGrid()")
 	if c.Param("sort") == "" {
 		param := gin.Param{Key: "sort", Value: `[{"property": "tbcsdt","direction": "desc"}]`}
 		c.Params = append(c.Params, param)
@@ -145,7 +145,7 @@ func (saya tbluah) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 			left join tblusr on tuuseriy = tbuseriy
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,
@@ -166,10 +166,10 @@ func (saya tbluah) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 	return hasil
 }
 func (saya tbluah) FillForm(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUAH-FillForm()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUAH-FillForm()")
 	key := c.Param("tmmenuiy")
 	sqlstm := SO_Class.Fmt.Sprint("select * from tbluah where tmmenuiy = '", key, "'")
-	SO_Class.Log.Println(true, sqlstm)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.GetRs(c, sqlstm)
 	return hasil
 }
@@ -414,7 +414,7 @@ func (saya tbluah) onAfterLoadGrid3(frmId string) string {
 }
 
 func (saya tbluah) LoadGrid2(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUAH-LoadGrid2()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUAH-LoadGrid2()")
 	tbuseriy := c.Param("tbuseriy")
 	if tbuseriy == "" {
 		tbuseriy = "0"
@@ -438,7 +438,7 @@ func (saya tbluah) LoadGrid2(c *gin.Context) (hasil SO_Class.Hasil) {
 			left join tblusr on tuuseriy = tbuseriy
 			where tbuseriy = '`, tbuseriy, `'
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,
@@ -464,7 +464,7 @@ func (saya tbluah) LoadGrid2(c *gin.Context) (hasil SO_Class.Hasil) {
 }
 
 func (saya tbluah) LoadGrid3(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLUAH-LoadGrid3()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLUAH-LoadGrid3()")
 
 	if c.Param("sort") == "" {
 		param := gin.Param{Key: "sort", Value: `[{"property": "tmscut_tmmenu","direction": "desc"}]`}
@@ -505,7 +505,7 @@ func (saya tbluah) LoadGrid3(c *gin.Context) (hasil SO_Class.Hasil) {
 			left join tblsys on tsdscd = 'MODE' and tssycd = tmvalu
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,

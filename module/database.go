@@ -443,7 +443,7 @@ func (saya db) GetSintaxSQL_IUD(iud ParamIUD) string {
 			" where ", SO_Class.Strings.Join(keys, " and "), ";")
 	}
 
-	SO_Class.Log.Println(true, "GetSintasxSQL_IUD : ", sql)
+	SO_Class.Log.Println(false, "GetSintasxSQL_IUD : ", sql)
 
 	return sql
 }
@@ -520,6 +520,37 @@ func (saya db) GetTBLNOR(tx Transaction, userName string, table string) string {
 	execTBLSLF(tx, userName, SO_Class.Fmt.Sprint(sqlstm, " -- ", iy))
 
 	return iy
+}
+
+func (saya db) GenerateAutoNo(tx Transaction,
+	userName string, code string, nbty string,
+	year string, month string, tipe string,
+	length int) (string, error) {
+
+	var nomor string
+	sqlstm :=
+		SO_Class.Fmt.Sprint(
+			" select stpGenerateAutoNo(",
+			" '", userName, "',",
+			" '", code, "',",
+			" '", nbty, "',",
+			" '", year, "',",
+			" '", month, "',",
+			" '", tipe, "',",
+			" '", length, "'",
+			") ",
+		)
+	SO_Class.Log.Println(true, "stpGenerateAutoNo ", sqlstm)
+	errCSYNBR := tx.QueryRow(sqlstm).Scan(&nomor)
+	if errCSYNBR != nil {
+		errCSYNBR = SO_Class.Fmt.Errorf("Gagal GenerateAutoNo : %v", errCSYNBR)
+		SO_Class.Log.Println(true, "Gagal GenerateAutoNo ", errCSYNBR)
+		nomor = ""
+	}
+
+	execTBLSLF(tx, userName, SO_Class.Fmt.Sprint(sqlstm, " -- ", nomor))
+
+	return nomor, errCSYNBR
 }
 
 func execTBLSLF(tx Transaction, userName string, sqlstm string) (sql sql.Result, err error) {

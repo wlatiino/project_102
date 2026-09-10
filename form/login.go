@@ -22,7 +22,7 @@ type user struct {
 }
 
 func (lLogin) Klik(c *gin.Context) {
-	SO_Class.Log.Println(true, "Masuk Login-Klik()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk Login-Klik()")
 
 	var hasil SO_Class.Hasil
 	hasil.Sukses = false
@@ -40,7 +40,7 @@ func (lLogin) Klik(c *gin.Context) {
 	c.Set("globalDB", u.Database)
 
 	sqlstm := SO_Class.Fmt.Sprint(`select * from tblusr where tuuser = '` + u.Username + `' `)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	tblusr := Form.GetRs(c, sqlstm)
 	if tblusr.Data == nil {
 		hasil.Sukses = false
@@ -197,7 +197,7 @@ func (lLogin) Refresh(c *gin.Context) {
 }
 
 func (lLogin) GetConnList(c *gin.Context) {
-	SO_Class.Log.Println(true, "Masuk Login-GetConnList()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk Login-GetConnList()")
 	c.JSON(http.StatusOK, Form.GetDbConnList(c))
 }
 

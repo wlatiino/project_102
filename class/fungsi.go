@@ -157,24 +157,80 @@ func (saya fFungsi) BindParamsToStruct(c *gin.Context, structAnda interface{}) e
 		paramsMap[key] = value
 	}
 
+	// structValue := reflect.ValueOf(structAnda).Elem()
+	// flagPrint := false
+	// for fieldName, fieldValue := range paramsMap {
+	// 	// Get the corresponding struct field by name
+	// 	fName := Strings.ToUpper(fieldName)
+	// 	Log.Println(flagPrint, "Field: ", fName)
+
+	// 	field := structValue.FieldByName(fName)
+
+	// 	if !field.IsValid() {
+	// 		Log.Println(flagPrint, "BindParamsToStruct - Field not found: ", fName)
+	// 	} else {
+	// 		// Set the struct field value
+	// 		field.Set(reflect.ValueOf(fieldValue))
+	// 	}
+	// }
+
+	// return nil
+
+	return saya.BindDataToStruct(paramsMap, structAnda)
+
+}
+
+func (saya fFungsi) BindDataToStruct(Data map[string]interface{}, structAnda interface{}) error {
+
 	structValue := reflect.ValueOf(structAnda).Elem()
-	flagPrint := false
-	for fieldName, fieldValue := range paramsMap {
+	flagPrint := true
+	for fieldName, fieldValue := range Data {
 		// Get the corresponding struct field by name
 		fName := Strings.ToUpper(fieldName)
-		Log.Println(flagPrint, "Field: ", fName)
 
 		field := structValue.FieldByName(fName)
 
 		if !field.IsValid() {
-			Log.Println(flagPrint, "BindParamsToStruct - Field not found: ", fName)
+			Log.Println(flagPrint, "Field: ", fName, " not found! ")
 		} else {
+			Log.Println(flagPrint, "Field: ", fName)
 			// Set the struct field value
 			field.Set(reflect.ValueOf(fieldValue))
 		}
 	}
 
 	return nil
+}
+
+func (saya fFungsi) Left(s string, n int) string {
+	r := []rune(s)
+	if n >= len(r) {
+		return s
+	}
+	return string(r[:n])
+}
+
+func (saya fFungsi) Mid(s string, start, length int) string {
+	r := []rune(s)
+
+	if start >= len(r) {
+		return ""
+	}
+
+	end := start + length
+	if end > len(r) {
+		end = len(r)
+	}
+
+	return string(r[start:end])
+}
+
+func (saya fFungsi) Right(s string, n int) string {
+	r := []rune(s)
+	if n >= len(r) {
+		return s
+	}
+	return string(r[len(r)-n:])
 }
 
 // Exported instance

@@ -18,7 +18,7 @@ type tblslf struct {
 }
 
 func (saya tblslf) Save(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLSLF-Save()")
+	SO_Class.Log.CetakKunci(true, c, "Masuk TBLSLF-Save()")
 	hasil.Sukses = false
 	hasil.Pesan = "No Action for this Method!"
 	hasil.Data = ""
@@ -27,7 +27,7 @@ func (saya tblslf) Save(c *gin.Context) (hasil SO_Class.Hasil) {
 }
 
 func (saya tblslf) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLSLF-LoadGrid()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLSLF-LoadGrid()")
 	if c.Param("sort") == "" {
 		param := gin.Param{
 			Key: "sort",
@@ -46,7 +46,7 @@ func (saya tblslf) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 			from tblslf 
 			where 1 = 1
 		`)
-	SO_Class.Log.Println(false, sqlstm)
+	SO_Class.Log.CetakKunci(false, c, sqlstm)
 	hasil = Form.LoadGrid(ParamLoadGrid{
 		c:      c,
 		sqlstm: sqlstm,
@@ -64,10 +64,10 @@ func (saya tblslf) LoadGrid(c *gin.Context) (hasil SO_Class.Hasil) {
 	return hasil
 }
 func (saya tblslf) FillForm(c *gin.Context) (hasil SO_Class.Hasil) {
-	SO_Class.Log.Println(true, "Masuk TBLSLF-FillForm()")
+	SO_Class.Log.CetakKunci(false, c, "Masuk TBLSLF-FillForm()")
 	key := c.Param("tqnomriy")
 	sqlstm := SO_Class.Fmt.Sprint("select * from tblslf where tqnomriy = '", key, "'")
-	SO_Class.Log.Println(true, sqlstm)
+	SO_Class.Log.CetakKunci(true, c, sqlstm)
 	hasil = Form.GetRs(c, sqlstm)
 	return hasil
 }

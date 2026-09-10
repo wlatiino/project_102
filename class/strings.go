@@ -61,5 +61,9 @@ func (saya sStrings) Join(elems []string, sep string) string {
 	return strings.Join(elems, sep)
 }
 
+func (saya sStrings) NewReplacer(oldNew ...string) *strings.Replacer {
+	return strings.NewReplacer(oldNew...)
+}
+
 // Exported instance
 var Strings sStrings
